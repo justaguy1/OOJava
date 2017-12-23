@@ -14,4 +14,11 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>src/mygame/icons/green_ball.png</name>
+			<type>1</type>
+			<location>C:/Users/Binaya/Downloads/green_ball.png</location>
+		</link>
+	</linkedResources>
 </projectDescription>
