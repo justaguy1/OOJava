@@ -36,6 +36,13 @@ public class Main   implements Runnable,KeyListener{
 	public static Image ballImg =null;
 	static boolean ballIsMoving =false;
 	
+	Image playerImage=null;
+	
+	
+	
+	
+	
+	
 	
 
 	
@@ -55,6 +62,16 @@ public class Main   implements Runnable,KeyListener{
 		ballThread.start();
 		
 		
+	}
+	
+	void InitPlayer(int x,int y,int height, int width)
+	{
+		player_xpos=x;
+		player_ypos=y;
+		player_height=height;
+		player_width=width;
+		
+		this.playerImage=this.getImage("icons\\player.png");
 	}
 	
 	Main(int pNo)
@@ -129,9 +146,8 @@ public class Main   implements Runnable,KeyListener{
 
 		g.clearRect(0, 0, 1000, 700);
 		
-		
         g.drawImage(ballImg, ball_xpos, ball_ypos, ball_radius, ball_radius,null);
-
+        g.drawImage(playerImage, player_xpos,player_ypos,player_width,player_height,null);
 		bs.show();
 		g.dispose();
 		
@@ -150,17 +166,10 @@ public class Main   implements Runnable,KeyListener{
 		
 		if(ballIsMoving)
 		{
-			//System.out.println("ball_xpos : "+ball_xpos++);
-			//ball_xpos++;
-			//System.out.println("ball_xspeed : "+ball_xspeed);
-			//System.out.println("ball_ypos : "+ball_ypos);
-			//System.out.println("ball_yspeed : "+ball_yspeed);
-			
+	
 			ball_xpos=ball_xpos+ball_xspeed;
 			ball_ypos=ball_ypos+ball_yspeed;
-			
-			//System.out.println(count++);
-			
+
 		}
 		
 		
@@ -188,14 +197,6 @@ public class Main   implements Runnable,KeyListener{
 		}
 	}
 	
-	
-
-
-
-	
-	
-	
-
 
 	
 	public void keyPressed(KeyEvent e) {
@@ -204,15 +205,37 @@ public class Main   implements Runnable,KeyListener{
 		{
 			if(e.getKeyCode()==KeyEvent.VK_D)
 			{
-				
+				if(player_xpos<=860)
+				{
+					player_xpos+=10;
+				}
+			}
+			
+			if(e.getKeyCode()==KeyEvent.VK_A)
+			{
+				if(player_xpos>=20)
+				{
+					player_xpos-=10;
+				}
 			}
 			
 		}
 		if(this.playerNo ==2)
 		{
+			if(e.getKeyCode()==KeyEvent.VK_RIGHT)
+			{
+				if(player_xpos<=860)
+				{
+					player_xpos+=10;
+				}
+			}
+			
 			if(e.getKeyCode()==KeyEvent.VK_LEFT)
 			{
-				
+				if(player_xpos>=20)
+				{
+					player_xpos-=10;
+				}
 			}
 		}
 		
@@ -259,14 +282,18 @@ public class Main   implements Runnable,KeyListener{
 	
 	public static void main(String args[])
 	{
-		Main obj =new Main(1000,700,"hello",1);
-		Main ob =new Main(2);
+		Main player_01 =new Main(1000,700,"hello",1);
+		Main player_02 =new Main(2);
 		
-		
-		Thread t =new Thread(obj);
-		Thread t2 =new Thread(ob);
-		
+		player_01.InitPlayer(60, 100, 40, 80);
+		player_02.InitPlayer(60, 600, 40, 80);
 		InitBall();
+		
+		
+		Thread t =new Thread(player_01);
+		Thread t2 =new Thread(player_02);
+		
+		
 		t.start();
 		t2.start();
 		
