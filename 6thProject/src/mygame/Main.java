@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
+import java.awt.image.ImageObserver;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -11,32 +12,31 @@ import javax.swing.JFrame;
 
 
 
-public class Main implements Runnable,KeyListener{
+
+public class Main  implements Runnable,KeyListener{
 	
 	int height,width;
 	String title;
-	int count =0;
+	 static int count =0;
 	
 	JFrame frame;
 	static Canvas canvas;
 	static Graphics g;
-	BufferStrategy bs;
+	static BufferStrategy bs;
 	int playerNo =0;
 	
 	int player_xpos,player_ypos,player_height,player_width;
-	public static int ball_xpos,ball_ypos,ball_radius,ball_xspeed,ball_yspeed;
 	
-	
+	//related to thread
 	static boolean isRunning =true;
+	
+	//related to ball
+	public static int ball_xpos,ball_ypos,ball_radius,ball_xspeed,ball_yspeed;
+	public static Image ballImg =null;
 	static boolean ballIsMoving =false;
 	
-	static public Image ballImg =null;
 	
-	
-	/*public void paint(Graphics g)
-	{
-		g.fillOval(200, 200, 20, 20);
-	}*/
+
 	
 	static public void InitBall()
 	{
@@ -50,6 +50,8 @@ public class Main implements Runnable,KeyListener{
 		
 		
 		ballImg=ball.getImage("icons\\green_ball.png");
+		Thread ballThread=new Thread(ball);
+		ballThread.start();
 		
 		
 	}
@@ -112,32 +114,65 @@ public class Main implements Runnable,KeyListener{
 		 }
 		
 	}
-	private void Render() 
+	private synchronized void Render() 
 	{
-		g=canvas.getGraphics();
-		g.clearRect(0, 0, width, height);
 		
-		g.setColor(Color.CYAN);
-		g.fillRect(40, 200, 40, 20);
+        bs=canvas.getBufferStrategy();
 		
-		g.drawImage(ballImg, ball_xpos, ball_ypos, ball_radius, ball_radius, null, null);
+		if(bs==null)
+		{
+			canvas.createBufferStrategy(2);
+			return;
+		}
+		g=bs.getDrawGraphics();
 		
+		
+		//g.setColor(Color.white);
+		//g.clearRect(0, 0, width, height);
+		
+		//g.clearRect(0, 0, width, height);
+		
+		if(playerNo==3)
+		{
+			
+			//g.drawImage(ballImg, ball_xpos, ball_ypos, ball_radius, ball_radius, null, null);
+			
+			g.drawImage(ballImg, ball_xpos, ball_ypos, ball_radius, ball_radius,null);
+			g.setColor(Color.red);
+			g.fillRect(0, 0, 1000,height);
+			bs.show();
+		}
+		
+		
+		
+		bs.show();
 		g.dispose();
 		
 	}
 
 	private void Tick() 
 	{
+		if(playerNo==3) 
 		 moveBall();
 		
 	}
 	void moveBall()
 	{
+		
+		
+		
 		if(ballIsMoving)
 		{
+			//System.out.println("ball_xpos : "+ball_xpos++);
+			//ball_xpos++;
+			//System.out.println("ball_xspeed : "+ball_xspeed);
+			//System.out.println("ball_ypos : "+ball_ypos);
+			//System.out.println("ball_yspeed : "+ball_yspeed);
 			
 			ball_xpos=ball_xpos+ball_xspeed;
 			ball_ypos=ball_ypos+ball_yspeed;
+			
+			//System.out.println(count++);
 			
 		}
 		
@@ -194,6 +229,15 @@ public class Main implements Runnable,KeyListener{
 			}
 		}
 		
+		if(e.getKeyCode()==KeyEvent.VK_SPACE)
+		{
+			if(!ballIsMoving)
+			{
+				ballIsMoving=true;
+			}
+			
+		}
+		
 	}
 
 	
@@ -235,8 +279,11 @@ public class Main implements Runnable,KeyListener{
 		Thread t =new Thread(obj);
 		Thread t2 =new Thread(ob);
 		
+		InitBall();
 		t.start();
 		t2.start();
+		
+		
 
 	}
 
