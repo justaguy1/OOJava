@@ -13,7 +13,8 @@ import javax.swing.JFrame;
 
 
 
-public class Main  implements Runnable,KeyListener{
+
+public class Main   implements Runnable,KeyListener{
 	
 	int height,width;
 	String title;
@@ -125,25 +126,12 @@ public class Main  implements Runnable,KeyListener{
 			return;
 		}
 		g=bs.getDrawGraphics();
-		
-		
-		
-		
+
 		g.clearRect(0, 0, 1000, 700);
 		
-		if(playerNo==3)
-		{
-			
-			//g.drawImage(ballImg, ball_xpos, ball_ypos, ball_radius, ball_radius, null, null);
-			
-			g.drawImage(ballImg, ball_xpos, ball_ypos, ball_radius, ball_radius,null);
-			g.setColor(Color.red);
-			g.fillRect(0, 0, 1000,height);
-			bs.show();
-		}
 		
-		
-		
+        g.drawImage(ballImg, ball_xpos, ball_ypos, ball_radius, ball_radius,null);
+
 		bs.show();
 		g.dispose();
 		
