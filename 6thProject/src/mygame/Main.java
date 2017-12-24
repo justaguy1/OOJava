@@ -22,11 +22,13 @@ public class Main   implements Runnable,KeyListener{
 	
 	JFrame frame;
 	static Canvas canvas;
-	 Graphics g;
+	 Graphics2D g;
 	 BufferStrategy bs;
 	int playerNo =0;
 	
 	int player_xpos,player_ypos,player_height,player_width;
+	
+	static boolean _left=false,_right=false,left=false,right=false;
 	
 	//related to thread
 	static boolean isRunning =true;
@@ -38,6 +40,8 @@ public class Main   implements Runnable,KeyListener{
 	
 	Image playerImage=null;
 	
+	static int clearRectCount =0;
+	
 	
 	
 	
@@ -46,7 +50,7 @@ public class Main   implements Runnable,KeyListener{
 	
 
 	
-	static public void InitBall()
+	 public void InitBall()
 	{
 		ball_xpos=200;
 		ball_ypos=585;
@@ -54,12 +58,12 @@ public class Main   implements Runnable,KeyListener{
 		ball_xspeed=3;
 		ball_yspeed=3;
 		
-		Main ball =new Main(3);
 		
 		
-		ballImg=ball.getImage("icons\\green_ball.png");
-		Thread ballThread=new Thread(ball);
-		ballThread.start();
+		
+		this.ballImg=this.getImage("icons\\green_ball.png");
+		
+	
 		
 		
 	}
@@ -135,21 +139,60 @@ public class Main   implements Runnable,KeyListener{
 	private synchronized void Render() 
 	{
 		
-        bs=canvas.getBufferStrategy();
+        this.bs=canvas.getBufferStrategy();
 		
 		if(bs==null)
 		{
 			canvas.createBufferStrategy(2);
 			return;
 		}
-		g=bs.getDrawGraphics();
-
-		g.clearRect(0, 0, 1000, 700);
 		
-        g.drawImage(ballImg, ball_xpos, ball_ypos, ball_radius, ball_radius,null);
-        g.drawImage(playerImage, player_xpos,player_ypos,player_width,player_height,null);
-		bs.show();
-		g.dispose();
+		
+	  g=(Graphics2D) bs.getDrawGraphics();
+	 
+		  
+
+       
+        
+	   
+       
+       
+       if(count >3)
+       {
+    	   count=0;
+       }
+       else
+       {
+    	   count++;
+       }
+       
+       if(count==0)
+       {
+    	   g.clearRect(0, 0, 1000, 700);
+       }
+       System.out.println(count);
+		
+       g.drawImage(playerImage, player_xpos,player_ypos,player_width,player_height,null);
+		g.drawImage(ballImg, ball_xpos, ball_ypos, ball_radius, ball_radius,null);
+        
+       
+        	
+       
+        	
+        
+        
+        
+        
+       
+            
+        
+        
+        
+        this.bs.show();
+		this.g.dispose();
+  
+        
+		
 		
 	}
 
@@ -157,8 +200,53 @@ public class Main   implements Runnable,KeyListener{
 	{
 		if(playerNo==3) 
 		 moveBall();
+		checkPlayerInput();
 		
 	}
+	private void checkPlayerInput() {
+		if(this.playerNo ==1)
+		{
+			if(right==true)
+			{
+				if(player_xpos<=860)
+				{
+					player_xpos+=10;
+				}
+			}
+				
+			if(left==true)
+			{
+	
+				if(player_xpos>=20)
+				{
+					player_xpos-=10;
+				}
+			}
+		}
+		
+		if(this.playerNo ==2)
+		{
+				
+			if(_right==true)
+			{
+	
+				if(player_xpos<=860)
+				{
+					player_xpos+=10;
+				}
+			}
+				
+			if(_left==true)
+			{
+				
+				if(player_xpos>=20)
+				{
+					player_xpos-=10;
+				}
+			}
+		}
+	}
+
 	void moveBall()
 	{
 		
@@ -201,43 +289,20 @@ public class Main   implements Runnable,KeyListener{
 	
 	public void keyPressed(KeyEvent e) {
 		
-		if(this.playerNo ==1)
-		{
+		
 			if(e.getKeyCode()==KeyEvent.VK_D)
-			{
-				if(player_xpos<=860)
-				{
-					player_xpos+=10;
-				}
-			}
+				right=true;
 			
 			if(e.getKeyCode()==KeyEvent.VK_A)
-			{
-				if(player_xpos>=20)
-				{
-					player_xpos-=10;
-				}
-			}
-			
-		}
-		if(this.playerNo ==2)
-		{
+				left =true;
+
+		
 			if(e.getKeyCode()==KeyEvent.VK_RIGHT)
-			{
-				if(player_xpos<=860)
-				{
-					player_xpos+=10;
-				}
-			}
+				_right=true;
 			
 			if(e.getKeyCode()==KeyEvent.VK_LEFT)
-			{
-				if(player_xpos>=20)
-				{
-					player_xpos-=10;
-				}
-			}
-		}
+				_left=true;
+		
 		
 		if(e.getKeyCode()==KeyEvent.VK_SPACE)
 		{
@@ -247,12 +312,32 @@ public class Main   implements Runnable,KeyListener{
 			}
 			
 		}
-		
 	}
+		
+	
 
 	
-	public void keyReleased(KeyEvent arg0) {
-		// TODO Auto-generated method stub
+	public void keyReleased(KeyEvent e) {
+
+		if(this.playerNo ==1)
+		{
+			if(e.getKeyCode()==KeyEvent.VK_D)
+				right=false;
+			
+			if(e.getKeyCode()==KeyEvent.VK_A)				
+				left =false;
+			
+			
+		}
+		if(this.playerNo ==2)
+		{
+			if(e.getKeyCode()==KeyEvent.VK_RIGHT)
+            _right=false;
+
+         	if(e.getKeyCode()==KeyEvent.VK_LEFT)
+			_left=false;
+
+		}
 		
 	}
 
@@ -284,18 +369,22 @@ public class Main   implements Runnable,KeyListener{
 	{
 		Main player_01 =new Main(1000,700,"hello",1);
 		Main player_02 =new Main(2);
+		Main ball =new Main(3);
 		
 		player_01.InitPlayer(60, 100, 40, 80);
 		player_02.InitPlayer(60, 600, 40, 80);
-		InitBall();
+		
+		ball.InitBall();
 		
 		
 		Thread t =new Thread(player_01);
 		Thread t2 =new Thread(player_02);
+		Thread t3 =new Thread(ball);
 		
 		
 		t.start();
 		t2.start();
+		t3.start();
 		
 		
 
