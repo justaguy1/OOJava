@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
-import java.awt.image.ImageObserver;
+
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -21,8 +21,8 @@ public class Main  implements Runnable,KeyListener{
 	
 	JFrame frame;
 	static Canvas canvas;
-	static Graphics g;
-	static BufferStrategy bs;
+	 Graphics g;
+	 BufferStrategy bs;
 	int playerNo =0;
 	
 	int player_xpos,player_ypos,player_height,player_width;
@@ -127,10 +127,9 @@ public class Main  implements Runnable,KeyListener{
 		g=bs.getDrawGraphics();
 		
 		
-		//g.setColor(Color.white);
-		//g.clearRect(0, 0, width, height);
 		
-		//g.clearRect(0, 0, width, height);
+		
+		g.clearRect(0, 0, 1000, 700);
 		
 		if(playerNo==3)
 		{
