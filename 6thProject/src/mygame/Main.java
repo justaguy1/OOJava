@@ -37,6 +37,7 @@ public class Main   implements Runnable,KeyListener{
 	public static int ball_xpos,ball_ypos,ball_radius,ball_xspeed,ball_yspeed;
 	public static Image ballImg =null;
 	static boolean ballIsMoving =false;
+	static boolean CollisionDetected=false;
 	
 	Image playerImage=null;
 	
@@ -148,46 +149,26 @@ public class Main   implements Runnable,KeyListener{
 		}
 		
 		
-	  g=(Graphics2D) bs.getDrawGraphics();
-	 
-		  
-
-       
-        
-	   
-       
-       
-       if(count >3)
+		g=(Graphics2D) bs.getDrawGraphics();
+		
+		 if(clearRectCount==0)
+	       {
+			 
+	    	   g.clearRect(0, 0, 1000, 700);
+	       }
+      if(clearRectCount >3)
        {
-    	   count=0;
+    	  clearRectCount=0;
        }
        else
        {
-    	   count++;
+    	   clearRectCount++;
        }
-       
-       if(count==0)
-       {
-    	   g.clearRect(0, 0, 1000, 700);
-       }
-       System.out.println(count);
+
 		
        g.drawImage(playerImage, player_xpos,player_ypos,player_width,player_height,null);
-		g.drawImage(ballImg, ball_xpos, ball_ypos, ball_radius, ball_radius,null);
-        
-       
-        	
-       
-        	
-        
-        
-        
-        
-       
-            
-        
-        
-        
+	   g.drawImage(ballImg, ball_xpos, ball_ypos, ball_radius, ball_radius,null);
+
         this.bs.show();
 		this.g.dispose();
   
@@ -195,14 +176,65 @@ public class Main   implements Runnable,KeyListener{
 		
 		
 	}
-
-	private void Tick() 
-	{
+	
+	private synchronized void Tick() 
+	{ 
+	    int distance;
 		if(playerNo==3) 
 		 moveBall();
-		checkPlayerInput();
-		
+		 checkPlayerInput();
+		 if(playerNo !=3)
+		 {
+		   distance =calculateDistance(player_xpos+player_width/2,player_ypos+player_height/2,ball_xpos+ball_radius/2,ball_ypos+ball_radius/2);
+		   checkBallCollision(distance);
+		 }
+
 	}
+	
+	public synchronized void checkBallCollision(int distance)
+	{
+		if(CollisionDetected)
+			{
+			if(playerNo==1)
+			{
+				ball_yspeed=3;
+			}
+			if(playerNo==2)
+			{
+				ball_yspeed=-3;
+			}
+		}
+	}
+	
+	int calculateDistance(int x1, int y1, int x2, int y2)
+		{
+		    int x=(x2-x1)*(x2-x1);
+		    int y= (y2-y1)*(y2-y1);
+		    
+		    int distance =(int) Math.sqrt(x+y);
+		    
+		    calculateCollision(x1,y1,x2,y2,distance);
+		    
+		   // System.out.println("Distance : "+distance);
+		    return  distance;
+		    
+		  }
+	   
+	void calculateCollision(int x1,int y1, int x2, int y2, int distance)
+		{
+			
+			   if(distance<42)
+			   {
+				   CollisionDetected =true;
+				  
+			   }
+			   
+               else 
+			    {
+			    	CollisionDetected =false;
+			    	
+			    }
+		}
 	private void checkPlayerInput() {
 		if(this.playerNo ==1)
 		{
@@ -246,11 +278,11 @@ public class Main   implements Runnable,KeyListener{
 			}
 		}
 	}
+	
 
-	void moveBall()
+	public synchronized void moveBall()
 	{
-		
-		
+
 		
 		if(ballIsMoving)
 		{
@@ -283,6 +315,8 @@ public class Main   implements Runnable,KeyListener{
 			ball_yspeed=-ball_yspeed;
 			count=0;
 		}
+		
+		
 	}
 	
 
@@ -312,6 +346,7 @@ public class Main   implements Runnable,KeyListener{
 			}
 			
 		}
+
 	}
 		
 	
@@ -352,7 +387,7 @@ public class Main   implements Runnable,KeyListener{
 		Image img =null;
 		
 		try {
-			//img=new ImageIcon("D:\\6thSemProject\\6thSemProject\\src\\abcd.jpg").getImage();
+			
 			img = new ImageIcon(getClass().getResource(path)).getImage();
 		}
 		
