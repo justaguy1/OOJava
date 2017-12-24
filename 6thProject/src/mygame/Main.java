@@ -171,9 +171,7 @@ public class Main   implements Runnable,KeyListener{
 
         this.bs.show();
 		this.g.dispose();
-  
-        
-		
+  	
 		
 	}
 	
