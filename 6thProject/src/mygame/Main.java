@@ -62,7 +62,7 @@ public class Main   implements Runnable,KeyListener{
 		
 		
 		
-		this.ballImg=this.getImage("icons\\green_ball.png");
+		ballImg=this.getImage("icons\\green_ball.png");
 		
 	
 		
@@ -151,30 +151,56 @@ public class Main   implements Runnable,KeyListener{
 		
 		g=(Graphics2D) bs.getDrawGraphics();
 		
-		 if(clearRectCount==0)
-	       {
-			 
-	    	   g.clearRect(0, 0, 1000, 700);
-	       }
-      if(clearRectCount >3)
-       {
-    	  clearRectCount=0;
-       }
-       else
-       {
-    	   clearRectCount++;
-       }
+		 if(playerNo==1)
+			{  
+				renderMainplayer(g);
+				return;
+			}
+		 
+		 if(playerNo==2)
+		 {
+			 renderSecondplayer(g);
+			 return;
+		 }
 
+	  
+       if(playerNo==3)
+       {
+    	   renderBall(g);
+    	   return;
+    	  
+       }
+      
+        
+  
+        
 		
-       g.drawImage(playerImage, player_xpos,player_ypos,player_width,player_height,null);
-	   g.drawImage(ballImg, ball_xpos, ball_ypos, ball_radius, ball_radius,null);
-
-        this.bs.show();
-		this.g.dispose();
-  	
 		
 	}
 	
+	private void renderBall(Graphics2D g2) {
+		 g.drawImage(ballImg, ball_xpos, ball_ypos, ball_radius, ball_radius,null);
+		 this.bs.show();
+		 this.g.dispose();
+		
+	}
+
+	private void renderSecondplayer(Graphics2D g2) {
+		g.drawImage(playerImage, player_xpos,player_ypos,player_width,player_height,null);
+		this.bs.show();
+		this.g.dispose();
+		
+	}
+
+	private void renderMainplayer(Graphics2D g2) {
+		 g.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+		 g.drawImage(playerImage, player_xpos,player_ypos,player_width,player_height,null);
+		 this.bs.show();
+		 this.g.dispose();
+		 return;
+		
+	}
+
 	private synchronized void Tick() 
 	{ 
 	    int distance;
@@ -234,11 +260,14 @@ public class Main   implements Runnable,KeyListener{
 			    }
 		}
 	private void checkPlayerInput() {
+		int max_x=canvas.getWidth();
+		
+		
 		if(this.playerNo ==1)
 		{
 			if(right==true)
 			{
-				if(player_xpos<=860)
+				if(player_xpos<=max_x-player_width-10)
 				{
 					player_xpos+=10;
 				}
@@ -247,7 +276,7 @@ public class Main   implements Runnable,KeyListener{
 			if(left==true)
 			{
 	
-				if(player_xpos>=20)
+				if(player_xpos>=10)
 				{
 					player_xpos-=10;
 				}
@@ -260,7 +289,7 @@ public class Main   implements Runnable,KeyListener{
 			if(_right==true)
 			{
 	
-				if(player_xpos<=860)
+				if(player_xpos<=max_x-player_width-10)
 				{
 					player_xpos+=10;
 				}
@@ -269,7 +298,7 @@ public class Main   implements Runnable,KeyListener{
 			if(_left==true)
 			{
 				
-				if(player_xpos>=20)
+				if(player_xpos>=10)
 				{
 					player_xpos-=10;
 				}
@@ -280,7 +309,8 @@ public class Main   implements Runnable,KeyListener{
 
 	public synchronized void moveBall()
 	{
-
+       int max_x=canvas.getWidth();
+       int max_y=canvas.getHeight();
 		
 		if(ballIsMoving)
 		{
@@ -291,24 +321,24 @@ public class Main   implements Runnable,KeyListener{
 		}
 		
 		
-		if(ball_xpos<=20)
+		if(ball_xpos<=10)
 		{
 			ball_xspeed=-ball_xspeed;
 			count=0;
 		
 		}
-		if(ball_xpos>=960)
+		if(ball_xpos>=max_x-ball_radius)
 		{
 			ball_xspeed=-ball_xspeed;
 			count=0;
 		}
 		
-		if(ball_ypos<=20)
+		if(ball_ypos<=10)
 		{
 			ball_yspeed=-ball_yspeed;
 			count=0;
 		}
-		if(ball_ypos>=660)
+		if(ball_ypos>=max_y-ball_radius)
 		{
 			ball_yspeed=-ball_yspeed;
 			count=0;
@@ -400,24 +430,28 @@ public class Main   implements Runnable,KeyListener{
 	
 	public static void main(String args[])
 	{
-		Main player_01 =new Main(1000,700,"hello",1);
+		Main player_01 =new Main(1280,720,"hello",1);
 		Main player_02 =new Main(2);
+		
 		Main ball =new Main(3);
 		
 		player_01.InitPlayer(60, 100, 40, 80);
 		player_02.InitPlayer(60, 600, 40, 80);
+		
 		
 		ball.InitBall();
 		
 		
 		Thread t =new Thread(player_01);
 		Thread t2 =new Thread(player_02);
+		
 		Thread t3 =new Thread(ball);
 		
 		
 		t.start();
 		t2.start();
 		t3.start();
+
 		
 		
 
